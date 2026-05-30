@@ -1,0 +1,28 @@
+[Unit]
+Description=FOAH RSS PostgreSQL
+
+[Container]
+ContainerName=foah-rss-postgres
+Image=localhost/foah-rss/postgres-pgbackrest:current
+Network=foah-rss.network
+NetworkAlias=foah-rss-postgres
+EnvironmentFile=%h/.config/foah-rss/postgres.env
+Volume=foah-rss-postgres.volume:/var/lib/postgresql
+ShmSize=128m
+NoNewPrivileges=true
+HealthCmd=pg_isready -U $POSTGRES_USER -d $POSTGRES_DB
+HealthInterval=10s
+HealthTimeout=5s
+HealthRetries=10
+HealthStartPeriod=20s
+LogDriver=journald
+Exec=postgres -c shared_buffers=128MB -c work_mem=8MB -c maintenance_work_mem=64MB -c archive_mode=on -c archive_command="/usr/local/bin/foah-rss-pgbackrest-archive-push %%p" -c archive_timeout=60s -c checkpoint_completion_target=0.9
+
+[Service]
+Restart=always
+TimeoutStartSec=120
+TimeoutStopSec=60
+MemoryMax=512M
+
+[Install]
+WantedBy=default.target

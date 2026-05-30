@@ -1,0 +1,28 @@
+[Unit]
+Description=FOAH RSS Miniflux
+Requires=foah-rss-postgres.service reverse-proxy-network.service
+After=foah-rss-postgres.service reverse-proxy-network.service
+
+[Container]
+ContainerName=foah-rss-miniflux
+Image=localhost/foah-rss/miniflux:current
+Network=foah-rss.network
+Network=reverse-proxy.network
+NetworkAlias=foah-rss-miniflux
+EnvironmentFile=%h/.config/foah-rss/miniflux.env
+NoNewPrivileges=true
+HealthCmd=/usr/bin/miniflux -healthcheck auto
+HealthInterval=30s
+HealthTimeout=5s
+HealthRetries=3
+HealthStartPeriod=30s
+LogDriver=journald
+
+[Service]
+Restart=always
+TimeoutStartSec=120
+TimeoutStopSec=30
+MemoryMax=512M
+
+[Install]
+WantedBy=default.target

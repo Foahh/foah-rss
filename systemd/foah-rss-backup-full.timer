@@ -1,0 +1,11 @@
+[Unit]
+Description=Run weekly FOAH RSS pgBackRest full backup
+
+[Timer]
+OnCalendar=Sun *-*-* 03:15:00
+RandomizedDelaySec=15m
+Persistent=true
+Unit=foah-rss-backup@full.service
+
+[Install]
+WantedBy=timers.target

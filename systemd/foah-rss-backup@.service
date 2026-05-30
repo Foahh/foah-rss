@@ -1,0 +1,8 @@
+[Unit]
+Description=FOAH RSS pgBackRest %i backup
+After=foah-rss-postgres.service
+
+[Service]
+Type=oneshot
+EnvironmentFile=%h/.config/foah-rss/deploy.env
+ExecStart=/usr/bin/env bash -lc 'cd "$FOAH_RSS_DEPLOY_DIR" && exec "$FOAH_RSS_DEPLOY_DIR/backup.sh" %i'
